@@ -12,6 +12,7 @@ namespace DonovanColemanProject2.Views
     public partial class MainForm : Form
     {
         private const string GameTitle = "Text Twist by Coleman";
+        private const string StatsFileFilter = "JSON files (*.json)|*.json|All files (*.*)|*.*";
         private const int OneSecondInMilliseconds = 1000;
         /// <summary>The clock turns red when this many seconds or fewer are left.</summary>
         private const int LowTimeWarningSeconds = 10;
@@ -149,7 +150,6 @@ namespace DonovanColemanProject2.Views
                 FinishRound(finishedRound);
             }
         }
-
         /// <summary>
         /// Adds the clicked letter to the word being built. All seven letter buttons
         /// share this one handler.
@@ -259,6 +259,51 @@ namespace DonovanColemanProject2.Views
             }
 
             ShowHighScoreBoard();
+        }
+        /// <summary>
+        /// Exports every round played this session to a JSON file the player picks.
+        /// </summary>
+        private void exportStatsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_game.IsRoundActive || !_game.Session.HasRounds)
+            {
+                return;
+            }
+
+            using SaveFileDialog saveDialog = new SaveFileDialog();
+            saveDialog.Title = "Export Stats";
+            saveDialog.Filter = StatsFileFilter;
+            saveDialog.FileName = SessionStorage.DefaultFileName;
+            saveDialog.DefaultExt = "json";
+            saveDialog.AddExtension = true;
+            saveDialog.OverwritePrompt = true;
+
+            if (saveDialog.ShowDialog(this) != DialogResult.OK)
+            {
+                return;
+            }
+
+            try
+            {
+                SessionStorage.Export(_game.Session, saveDialog.FileName);
+                MessageBox.Show(
+                    this,
+                    $"Stats for {_game.Session.Rounds.Count} round(s) were exported to:"
+                    + Environment.NewLine + saveDialog.FileName,
+                    GameTitle,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            }
+            catch (IOException exception)
+            {
+                MessageBox.Show(
+                    this,
+                    "The stats could not be exported." + Environment.NewLine + Environment.NewLine
+                    + exception.Message,
+                    GameTitle,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
         }
         /// <summary>
         /// Shows the rules of the game.
@@ -464,7 +509,6 @@ namespace DonovanColemanProject2.Views
                 nameForm.ShowDialog(this);
                 playerName = nameForm.PlayerName;
             }
-
             // The name form does not close without a valid name, but the check stays
             // here so a bad name can never reach the board.
             if (!HighScoreEntry.IsValidName(playerName))
@@ -610,7 +654,8 @@ namespace DonovanColemanProject2.Views
         }
         /// <summary>
         /// Turns menu items on and off to match what makes sense right now. While a
-        /// round is being played only New Game and Exit are available.
+        /// round is being played only New Game and Exit are available, and exporting
+        /// is only available once at least one round has been played.
         /// </summary>
         private void UpdateMenus()
         {
@@ -622,6 +667,7 @@ namespace DonovanColemanProject2.Views
             twoMinutesToolStripMenuItem.Checked = timerSeconds == RoundTimerOptions.TwoMinutesSeconds;
             threeMinutesToolStripMenuItem.Checked = timerSeconds == RoundTimerOptions.ThreeMinutesSeconds;
 
+            exportStatsToolStripMenuItem.Enabled = isBetweenRounds && _game.Session.HasRounds;
             viewHighScoresToolStripMenuItem.Enabled = isBetweenRounds;
             howToPlayToolStripMenuItem.Enabled = isBetweenRounds;
         }

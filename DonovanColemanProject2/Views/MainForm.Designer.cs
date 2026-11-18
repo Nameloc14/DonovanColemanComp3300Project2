@@ -30,6 +30,8 @@ namespace DonovanColemanProject2.Views
             fileToolStripMenuItem = new ToolStripMenuItem();
             newGameToolStripMenuItem = new ToolStripMenuItem();
             fileToolStripSeparator1 = new ToolStripSeparator();
+            exportStatsToolStripMenuItem = new ToolStripMenuItem();
+            fileToolStripSeparator2 = new ToolStripSeparator();
             exitToolStripMenuItem = new ToolStripMenuItem();
             optionsToolStripMenuItem = new ToolStripMenuItem();
             timerToolStripMenuItem = new ToolStripMenuItem();
@@ -80,7 +82,7 @@ namespace DonovanColemanProject2.Views
             //
             // fileToolStripMenuItem
             //
-            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { newGameToolStripMenuItem, fileToolStripSeparator1, exitToolStripMenuItem });
+            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { newGameToolStripMenuItem, fileToolStripSeparator1, exportStatsToolStripMenuItem, fileToolStripSeparator2, exitToolStripMenuItem });
             fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             fileToolStripMenuItem.Size = new Size(37, 20);
             fileToolStripMenuItem.Text = "&File";
@@ -97,6 +99,20 @@ namespace DonovanColemanProject2.Views
             //
             fileToolStripSeparator1.Name = "fileToolStripSeparator1";
             fileToolStripSeparator1.Size = new Size(241, 6);
+            //
+            // exportStatsToolStripMenuItem
+            //
+            exportStatsToolStripMenuItem.Enabled = false;
+            exportStatsToolStripMenuItem.Name = "exportStatsToolStripMenuItem";
+            exportStatsToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.E;
+            exportStatsToolStripMenuItem.Size = new Size(244, 22);
+            exportStatsToolStripMenuItem.Text = "&Export Stats...";
+            exportStatsToolStripMenuItem.Click += exportStatsToolStripMenuItem_Click;
+            //
+            // fileToolStripSeparator2
+            //
+            fileToolStripSeparator2.Name = "fileToolStripSeparator2";
+            fileToolStripSeparator2.Size = new Size(241, 6);
             //
             // exitToolStripMenuItem
             //
@@ -479,13 +495,13 @@ namespace DonovanColemanProject2.Views
             ResumeLayout(false);
             PerformLayout();
         }
-
         #endregion
-
         private MenuStrip menuStrip;
         private ToolStripMenuItem fileToolStripMenuItem;
         private ToolStripMenuItem newGameToolStripMenuItem;
         private ToolStripSeparator fileToolStripSeparator1;
+        private ToolStripMenuItem exportStatsToolStripMenuItem;
+        private ToolStripSeparator fileToolStripSeparator2;
         private ToolStripMenuItem exitToolStripMenuItem;
         private ToolStripMenuItem optionsToolStripMenuItem;
         private ToolStripMenuItem timerToolStripMenuItem;
