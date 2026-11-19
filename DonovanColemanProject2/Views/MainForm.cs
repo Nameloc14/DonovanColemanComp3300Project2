@@ -306,6 +306,57 @@ namespace DonovanColemanProject2.Views
             }
         }
         /// <summary>
+        /// Loads a previously exported stats file so the player can continue adding
+        /// to it. If anything is wrong with the file the player is told what the
+        /// problem was and the game starts over as a brand new game.
+        /// </summary>
+        private void loadSessionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_game.IsRoundActive || !ConfirmReplacingCurrentStats())
+            {
+                return;
+            }
+
+            using OpenFileDialog openDialog = new OpenFileDialog();
+            openDialog.Title = "Load Previous Session";
+            openDialog.Filter = StatsFileFilter;
+            openDialog.CheckFileExists = true;
+
+            if (openDialog.ShowDialog(this) != DialogResult.OK)
+            {
+                return;
+            }
+
+            try
+            {
+                GameSession loadedSession = SessionStorage.Load(openDialog.FileName);
+                _game.LoadSession(loadedSession);
+
+                wordsListView.Items.Clear();
+                ShowFeedback(
+                    $"Loaded {loadedSession.Rounds.Count} round(s) with a "
+                    + $"{loadedSession.TimerSeconds} second timer. Choose New Game to continue.",
+                    NeutralFeedbackColor);
+            }
+            catch (InvalidDataException exception)
+            {
+                _game.ResetSession();
+                wordsListView.Items.Clear();
+                ShowFeedback("Choose New Game to start playing.", NeutralFeedbackColor);
+
+                MessageBox.Show(
+                    this,
+                    "The previous session could not be loaded." + Environment.NewLine + Environment.NewLine
+                    + "Problem: " + exception.Message + Environment.NewLine + Environment.NewLine
+                    + "The game has been set up as a brand new game with a 1 minute timer.",
+                    GameTitle,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+            }
+
+            UpdateDisplay();
+        }
+        /// <summary>
         /// Shows the rules of the game.
         /// </summary>
         private void howToPlayToolStripMenuItem_Click(object sender, EventArgs e)
@@ -554,6 +605,30 @@ namespace DonovanColemanProject2.Views
             }
         }
         /// <summary>
+        /// Warns the player that loading a session replaces the rounds already
+        /// played since the game was opened.
+        /// </summary>
+        /// <returns>true if it is okay to go ahead with loading; otherwise false.</returns>
+        private bool ConfirmReplacingCurrentStats()
+        {
+            if (!_game.Session.HasRounds)
+            {
+                return true;
+            }
+
+            DialogResult answer = MessageBox.Show(
+                this,
+                "Loading a previous session replaces the stats from the rounds you have played "
+                + "since the game was opened. Export them first if you want to keep them."
+                + Environment.NewLine + Environment.NewLine + "Do you want to continue?",
+                GameTitle,
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question,
+                MessageBoxDefaultButton.Button2);
+
+            return answer == DialogResult.Yes;
+        }
+        /// <summary>
         /// Shows a message under the buttons.
         /// </summary>
         /// <param name="message">The message to show.</param>
@@ -667,6 +742,7 @@ namespace DonovanColemanProject2.Views
             twoMinutesToolStripMenuItem.Checked = timerSeconds == RoundTimerOptions.TwoMinutesSeconds;
             threeMinutesToolStripMenuItem.Checked = timerSeconds == RoundTimerOptions.ThreeMinutesSeconds;
 
+            loadSessionToolStripMenuItem.Enabled = isBetweenRounds;
             exportStatsToolStripMenuItem.Enabled = isBetweenRounds && _game.Session.HasRounds;
             viewHighScoresToolStripMenuItem.Enabled = isBetweenRounds;
             howToPlayToolStripMenuItem.Enabled = isBetweenRounds;

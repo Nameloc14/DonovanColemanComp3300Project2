@@ -125,7 +125,6 @@ namespace DonovanColemanProject2.Model
             _selectedTiles.Add(tile);
             return true;
         }
-
         /// <summary>
         /// Adds the first unused tile showing the given letter to the word being
         /// built. This is what lets the player type letters on the keyboard.
@@ -274,6 +273,48 @@ namespace DonovanColemanProject2.Model
             return EndRound(false);
         }
         /// <summary>
+        /// Replaces the current session with one loaded from a file so the player can
+        /// keep adding to their earlier stats.
+        /// </summary>
+        /// <param name="session">The session that was loaded.</param>
+        /// <exception cref="InvalidOperationException">A round is being played.</exception>
+        /// <exception cref="InvalidDataException">
+        /// The session lists a word as valid that is not in the dictionary.
+        /// </exception>
+        public void LoadSession(GameSession session)
+        {
+            ArgumentNullException.ThrowIfNull(session);
+            EnsureNoRoundActive("A session cannot be loaded while a round is being played.");
+
+            foreach (GameRound round in session.Rounds)
+            {
+                foreach (ValidWordAttempt validWord in round.ValidWords)
+                {
+                    if (!_dictionary.Contains(validWord.Word))
+                    {
+                        throw new InvalidDataException(
+                            $"Round {round.RoundNumber} lists \"{validWord.Word}\" as a valid word, "
+                            + "but it is not in the dictionary.");
+                    }
+                }
+            }
+
+            Session = session;
+            ResetBoard();
+        }
+        /// <summary>
+        /// Throws away the current stats and starts over as a brand new game with
+        /// the default one minute timer.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">A round is being played.</exception>
+        public void ResetSession()
+        {
+            EnsureNoRoundActive("The session cannot be reset while a round is being played.");
+
+            Session = new GameSession();
+            ResetBoard();
+        }
+        /// <summary>
         /// Draws seven letters, drawing again if no dictionary word can be made from
         /// them so the player is never dealt a round that cannot be scored.
         /// </summary>
@@ -309,6 +350,15 @@ namespace DonovanColemanProject2.Model
             Session.AddRound(round);
             CurrentRound = null;
             return round;
+        }
+        /// <summary>
+        /// Clears the tiles, the word being built, and the clock.
+        /// </summary>
+        private void ResetBoard()
+        {
+            _tiles.Clear();
+            _selectedTiles.Clear();
+            TimeRemainingSeconds = 0;
         }
         /// <summary>
         /// Gets the letters on the board, in display order, as one string.

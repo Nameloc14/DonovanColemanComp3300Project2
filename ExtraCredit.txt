@@ -1,0 +1,13 @@
+COMP 3300  Project 2  Donovan Coleman
+
+I am attempting the optional extra credit portion of Project 2.
+
+How it works:
+- Play at least one round, then choose File > Export Stats to save the session to a JSON file.
+- After click on choose File > Load Previous Session
+  and pick that file. Every round in the file (all valid and invalid words) is loaded back in,
+  the countdown timer is set to the timer that was set when the file was exported, and new
+  rounds are added on after the loaded ones.
+- If anything is wrong with the file (missing, not JSON, or holding values that do not make
+  sense), a message explains what the problem was and the game starts over as a brand new
+  game with the default 1 minute timer.

@@ -30,6 +30,7 @@ namespace DonovanColemanProject2.Views
             fileToolStripMenuItem = new ToolStripMenuItem();
             newGameToolStripMenuItem = new ToolStripMenuItem();
             fileToolStripSeparator1 = new ToolStripSeparator();
+            loadSessionToolStripMenuItem = new ToolStripMenuItem();
             exportStatsToolStripMenuItem = new ToolStripMenuItem();
             fileToolStripSeparator2 = new ToolStripSeparator();
             exitToolStripMenuItem = new ToolStripMenuItem();
@@ -82,7 +83,7 @@ namespace DonovanColemanProject2.Views
             //
             // fileToolStripMenuItem
             //
-            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { newGameToolStripMenuItem, fileToolStripSeparator1, exportStatsToolStripMenuItem, fileToolStripSeparator2, exitToolStripMenuItem });
+            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { newGameToolStripMenuItem, fileToolStripSeparator1, loadSessionToolStripMenuItem, exportStatsToolStripMenuItem, fileToolStripSeparator2, exitToolStripMenuItem });
             fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             fileToolStripMenuItem.Size = new Size(37, 20);
             fileToolStripMenuItem.Text = "&File";
@@ -99,6 +100,14 @@ namespace DonovanColemanProject2.Views
             //
             fileToolStripSeparator1.Name = "fileToolStripSeparator1";
             fileToolStripSeparator1.Size = new Size(241, 6);
+            //
+            // loadSessionToolStripMenuItem
+            //
+            loadSessionToolStripMenuItem.Name = "loadSessionToolStripMenuItem";
+            loadSessionToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.O;
+            loadSessionToolStripMenuItem.Size = new Size(244, 22);
+            loadSessionToolStripMenuItem.Text = "&Load Previous Session...";
+            loadSessionToolStripMenuItem.Click += loadSessionToolStripMenuItem_Click;
             //
             // exportStatsToolStripMenuItem
             //
@@ -500,6 +509,7 @@ namespace DonovanColemanProject2.Views
         private ToolStripMenuItem fileToolStripMenuItem;
         private ToolStripMenuItem newGameToolStripMenuItem;
         private ToolStripSeparator fileToolStripSeparator1;
+        private ToolStripMenuItem loadSessionToolStripMenuItem;
         private ToolStripMenuItem exportStatsToolStripMenuItem;
         private ToolStripSeparator fileToolStripSeparator2;
         private ToolStripMenuItem exitToolStripMenuItem;
