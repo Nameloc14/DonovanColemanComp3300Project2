@@ -30,6 +30,9 @@ namespace DonovanColemanProject2.Model
                 throw new ArgumentException("The dictionary does not contain any words.", nameof(words));
             }
         }
+        /// <summary>
+        /// Gets the number of words in the dictionary.
+        /// </summary>
         public int Count
         {
             get { return _words.Count; }
